@@ -16,10 +16,15 @@ def add(task):
     
 
 @cli.command()
-def list():
+@click.argument('status', type=str)
+def list(status):
+    allowed_statuses = ['all', 'new', 'inprogress', 'done']
+    if status not in allowed_statuses:
+        click.BadParameter(f"Invalid stutus '{status}'. Choose from {','.join(allowed_statuses)}")
     todos = todo_manager.list_todos()
+    if status!='all':
+        todos = [todo for todo in todos if todo['status']==status]
     for index, todo in enumerate(todos):
-        # status = "✔" if todo['completed'] else "✘" # "\u2714", "\u2718" are the escape sequences accordingly
         click.echo(f"{index}: {progress_bar[todo['status']]} {todo['task']}")
         
 def update_util(index,status):
