@@ -16,16 +16,15 @@ def add(task):
     
 
 @cli.command()
-@click.argument('status', type=str)
+@click.option('-s','--status',type=click.Choice(['all','new','inprogress','done'], case_sensitive=False),default='all',help='List tasks based on statuses new,inprogress,done or all together')
 def list(status):
-    allowed_statuses = ['all', 'new', 'inprogress', 'done']
-    if status not in allowed_statuses:
-        click.BadParameter(f"Invalid stutus '{status}'. Choose from {','.join(allowed_statuses)}")
     todos = todo_manager.list_todos()
     if status!='all':
         todos = [todo for todo in todos if todo['status']==status]
     for index, todo in enumerate(todos):
         click.echo(f"{index}: {progress_bar[todo['status']]} {todo['task']}")
+        
+        
         
 def update_util(index,status):
     try:
