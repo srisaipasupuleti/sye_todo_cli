@@ -32,6 +32,7 @@ class TodoManager:
         if 0<= index < len(self.todos):
             self.todos[index]['status']=status
             self.save_todos()
+            return self.todos[index]
         else:
             raise IndexError("Todo doesn't exist")
     
