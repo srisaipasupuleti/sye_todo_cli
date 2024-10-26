@@ -14,6 +14,7 @@ setup(
     description='CLI Todo app with add, list, remove functionality as of now',
     long_description=open('README.md', 'r').read(),
     long_description_content_type='text/markdown',
+    url="https://github.com/srisaipasupuleti/sye_todo_cli.git",
     classifiers=[
         'Operating System :: OS Independent'
     ],
