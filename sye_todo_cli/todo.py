@@ -9,15 +9,18 @@ def cli():
     "ToDo cli application"
     pass
 
+# Add tasks
 @cli.command()
 @click.argument('task')
 def add(task):
     todo_manager.add_todo(task)
     
 
+# List tasks
 @cli.command()
 @click.option('-s','--status',type=click.Choice(['all','new','inprogress','done'], case_sensitive=False),default='all',help='List tasks based on statuses new,inprogress,done or all together')
 def list(status):
+    status = status.lower()
     todos = todo_manager.list_todos()
     if status!='all':
         todos = [todo for todo in todos if todo['status']==status]
@@ -25,28 +28,16 @@ def list(status):
         click.echo(f"{index}: {progress_bar[todo['status']]} {todo['task']}")
         
         
-        
-def update_util(index,status):
-    try:
-        status = "done" if status else "inprogress"
-        todo_manager.update_todo(index, status)
-        todo = todo_manager.get_todo(index)
-        msg = f"{progress_bar[status]} {todo}" if todo else "No such task"
-        click.echo(msg)
-    except IndexError as e:
-        click.echo(f"{str(e)}. Invalid Index.")
-        
-        
-@cli.command()
-@click.argument('index', type=int)
-def inprogress(index):
-    update_util(index, False)
-        
+# Move tasks between statuses
 @cli.command()
 @click.argument('index',type=int)
-def done(index):
-    update_util(index, True)
-    
+@click.option('-s','--to-status', type=click.Choice(['new','inprogress','done'],case_sensitive=False), required=True, help='Moves task to desired status like new,inprogress,done')
+def move(index, to_status):
+    todo = todo_manager.update_todo(index, status=to_status.lower())
+    click.echo(f"Task '{todo[r'task']}' moved to '{todo[r'status']}")
+
+
+# Removes tasks from the list
 @cli.command()        
 @click.argument('index',type=int)
 def remove(index):
